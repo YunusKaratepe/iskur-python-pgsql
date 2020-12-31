@@ -72,9 +72,6 @@ class Ui_FormListEmployees(object):
         self.pushButtonListAllEmployees = QtWidgets.QPushButton(FormListEmployees)
         self.pushButtonListAllEmployees.setGeometry(QtCore.QRect(770, 50, 131, 25))
         self.pushButtonListAllEmployees.setObjectName("pushButtonListAllEmployees")
-        self.pushButtonUpdate = QtWidgets.QPushButton(FormListEmployees)
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(0, 462, 170, 40))
-        self.pushButtonUpdate.setObjectName("pushButtonUpdate")
         self.tableEmployees.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tableEmployees.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
 
@@ -112,14 +109,9 @@ class Ui_FormListEmployees(object):
         self.comboBoxSearchType.setItemText(5, _translate("FormListEmployees", "Şirket Adı"))
         self.pushButtonSearch.setText(_translate("FormListEmployees", "Ara"))
         self.pushButtonListAllEmployees.setText(_translate("FormListEmployees", "Tüm Kayıtları Getir"))
-        self.pushButtonUpdate.setText(_translate("FormListEmployees", "Güncelle"))
         self.listAllEmployees()
-        self.pushButtonUpdate.clicked.connect(self.updateSelectedEmployee)
         self.pushButtonSearch.clicked.connect(self.listFilteredEmployees)
         self.pushButtonListAllEmployees.clicked.connect(self.listAllEmployees)
-     
-    def updateSelectedEmployee(self):
-        print("Güncelle")
 
     def listAllEmployees(self):
         employees_data = vtConnection.readEmployees()
