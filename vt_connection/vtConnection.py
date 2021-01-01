@@ -15,6 +15,7 @@ try:
     firm = db.Table('firm', db.MetaData(), autoload=True, autoload_with=engine)
     unemployed = db.Table('unemployed', db.MetaData(), autoload=True, autoload_with=engine)
     interview = db.Table('interview', db.MetaData(), autoload=True, autoload_with=engine)
+    todo = db.Table('todo', db.MetaData(), autoload=True, autoload_with=engine)
 
     print("Connected Db: " + db_name)
 except Exception as e:
@@ -283,5 +284,22 @@ def hires_from_firm(min_employee_count: int):
                             "True GROUP BY firm_id HAVING count(firm_id)>="+str(min_employee_count)+")").fetchall()
     return type_cast_to_dict(data)
 
-print(hires_from_firm(0))
+
+def readTodos():
+    readTodos_sql = todo.select()
+    data = session.execute(readTodos_sql).fetchall()
+    return type_cast_to_dict(data)
+
+def addTodo(todo_):
+    todo_ = {'todo': todo_}
+    try:
+        session.execute(db.insert(todo), todo_)
+        return None
+    except Exception as e:
+        return e
+
+def deleteTodo(todoText):
+    deleteTodo_sql = db.delete(todo).where(todo.c.todo == todoText)
+    session.execute(deleteTodo_sql)
+
 

@@ -9,7 +9,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import FormAddFirm, FormAddUnemployed, FormDeleteUnemployed, FormListUnemployeds, FormListEmployees, FormListFirms, \
-    FormDeleteFirm, FormListAllInterviews, FormListNullInterviews, FormCreateInterview
+    FormDeleteFirm, FormListAllInterviews, FormListNullInterviews, FormCreateInterview, FormCreateTodo
 from vt_connection import vtConnection
 
 class Ui_MainWindow(object):
@@ -79,9 +79,15 @@ class Ui_MainWindow(object):
         self.listWidgetTodo = QtWidgets.QListWidget(self.centralwidget)
         self.listWidgetTodo.setGeometry(QtCore.QRect(60, 610, 661, 131))
         self.listWidgetTodo.setObjectName("listWidgetTodo")
+
+        self.pushButtonDeleteTodo = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonDeleteTodo.setGeometry(QtCore.QRect(730, 710, 81, 31))
+        self.pushButtonDeleteTodo.setObjectName("pushButtonDeleteTodo")
+
         self.pushButtonAddTodo = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonAddTodo.setGeometry(QtCore.QRect(730, 710, 81, 31))
+        self.pushButtonAddTodo.setGeometry(QtCore.QRect(730, 670, 81, 31))
         self.pushButtonAddTodo.setObjectName("pushButtonAddTodo")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -134,6 +140,9 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuEmployeeActions.menuAction())
         self.menubar.addAction(self.menuApplicationActions.menuAction())
         self.menubar.addAction(self.menuInterviewActions.menuAction())
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.listWidgetTodo.setFont(font)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -162,7 +171,46 @@ class Ui_MainWindow(object):
         self.actionCreateInterview.setText(_translate("MainWindow", "Yeni Mülakat Oluştur"))
         self.actionAddNewUnemployed.setText(_translate("MainWindow", "Başvuru Ekle"))
         self.actionDeleteUnemployed.setText(_translate("MainWindow", "Başvuru Sil"))
+        self.pushButtonDeleteTodo.setText(_translate("MainWindow", "Seçiliyi Sil"))
+        self.listTodos()
+        self.pushButtonAddTodo.clicked.connect(self.openFormAddTodo)
+        self.pushButtonDeleteTodo.clicked.connect(self.deleteTodo)
 
+    def addTodo(self):
+        if self.FormCreateTodo_ui.textEditTodo.toPlainText() and not self.FormCreateTodo_ui.textEditTodo.toPlainText().isspace():
+            vtConnection.addTodo(self.FormCreateTodo_ui.textEditTodo.toPlainText())
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Todo', 'İş eklendi')
+            messageBox.exec()
+            self.listWidgetTodo.addItem(self.FormCreateTodo_ui.textEditTodo.toPlainText())
+        else:
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Todo',
+                                               'Yapılacak iş boş olamaz.')
+            messageBox.exec()
+
+
+    def openFormAddTodo(self):
+        self.FormCreateTodo = QtWidgets.QWidget()
+        self.FormCreateTodo_ui = FormCreateTodo.Ui_FormTodo()
+        self.FormCreateTodo_ui.setupUi(self.FormCreateTodo)
+        self.FormCreateTodo_ui.pushButtonCreate.clicked.connect(self.addTodo)
+        self.FormCreateTodo.show()
+
+    def listTodos(self):
+        todos = vtConnection.readTodos()
+        for t in todos:
+            self.listWidgetTodo.addItem(t['todo'])
+
+    def deleteTodo(self):
+        if self.listWidgetTodo.selectedIndexes():
+            vtConnection.deleteTodo(self.listWidgetTodo.currentItem().text())
+            item = self.listWidgetTodo.takeItem(self.listWidgetTodo.currentRow());
+            del item
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Todo',
+                                               'İş başarıyla silindi')
+            messageBox.exec()
+        else:
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Todo', 'Önce listeden bir iş seçmelisiniz.')
+            messageBox.exec()
 
     def openFormListUnemployeds(self):
         self.FormListUnemployeds = QtWidgets.QWidget()
