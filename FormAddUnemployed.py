@@ -196,10 +196,11 @@ class Ui_FormAddUnemployed(object):
             }
             print(new_unemployed)
             vtConnection.addNewUnemployed(new_unemployed)
-            messageBox = QtWidgets.QMessageBox()
-            messageBox.setIcon(QtWidgets.QMessageBox.Information)
-            messageBox.setText('Başvuru başarıyla eklendi')
-            messageBox.setWindowTitle('Alert')
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Başvuru', 'Başvuru eklendi')
+            messageBox.exec()
+        else:
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Başvuru', 'Başvuru eklemek için tüm '
+                                                                                           'alanlar dolu olmalıdır')
             messageBox.exec()
 
 if __name__ == "__main__":

@@ -108,13 +108,12 @@ class Ui_FormAddFirm(object):
                 "registery_permission": self.radioButtonRegisteryRelax.isChecked()  # izin var = true
             }
             vtConnection.addNewFirm(new_firm)
-            messageBox = QtWidgets.QMessageBox()
-            messageBox.setIcon(QtWidgets.QMessageBox.Information)
-            messageBox.setText('Firma başarıyla eklendi')
-            messageBox.setWindowTitle('Alert')
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Firma', 'Firma eklendi')
             messageBox.exec()
-
-        return print('Alanlarin hepsini doldurun!')
+        else:
+            messageBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Firma', 'Firma eklemek için tüm '
+                                                                                           'alanlar dolu olmalıdır')
+            messageBox.exec()
 
     def retranslateUi(self, FormAddFirm):
         _translate = QtCore.QCoreApplication.translate
