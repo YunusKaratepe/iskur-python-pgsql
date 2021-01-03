@@ -159,10 +159,9 @@ class Ui_FormListNullInterviews(object):
             messageBox = QtWidgets.QMessageBox.question(None, 'İşe Al', 'İşe almak istediğinize emin misiniz?',
                                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
             if messageBox == QtWidgets.QMessageBox.Yes:
-                vtConnection.hireOrDenyUnemployed(self.UnemployedInfos_ui.unemloyed_ssn, self.UnemployedInfos_ui.firm_id, True,
+                exceptionText = vtConnection.hireOrDenyUnemployed(self.UnemployedInfos_ui.unemloyed_ssn, self.UnemployedInfos_ui.firm_id, True,
                                                   int(self.UnemployedInfos_ui.lineEditSalary.text()))
-                messageBox2 = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'İşe Al',
-                                                   'Başarıyla işe alındı')
+                messageBox2 = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'İşe Al', 'İşe alma işlemi gerçekleşmiştir.')
                 messageBox2.exec_()
                 self.tableWidgetListInterviews.removeRow(self.tableWidgetListInterviews.currentRow())
         else:

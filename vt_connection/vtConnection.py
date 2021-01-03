@@ -1,5 +1,6 @@
 import json
 import sqlalchemy as db
+import logging
 
 db_host="localhost"
 db_port="5432"
@@ -16,6 +17,8 @@ try:
     unemployed = db.Table('unemployed', db.MetaData(), autoload=True, autoload_with=engine)
     interview = db.Table('interview', db.MetaData(), autoload=True, autoload_with=engine)
     todo = db.Table('todo', db.MetaData(), autoload=True, autoload_with=engine)
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
     print("Connected Db: " + db_name)
 except Exception as e:
@@ -258,11 +261,8 @@ def hireOrDenyUnemployed(hired_unemployed_ssn: str, hiring_firm_id: int, outcome
         #tmp_employee = type_cast_to_dict(session.execute(db.select([unemployed]).where(unemployed.c.ssn==hired_unemployed_ssn)).fetchone())
         #session.execute(db.insert(employee),tmp_employee)
         session.execute(interview.update().where(db.and_(interview.c.worker_ssn==hired_unemployed_ssn, interview.c.firm_id==hiring_firm_id)).values(outcome=outcome))
-
         session.execute(employee.update().where(employee.c.ssn==hired_unemployed_ssn).values(salary=maas))
-        #session.execute(db.delete(unemployed).where(unemployed.c.ssn==hired_unemployed_ssn)) Bu işlem triggerla gerçekleştiriliyor
-        data = session.execute("select hire_employee_firm('"+hired_unemployed_ssn+"')").fetchall()
-        return type_cast_to_dict(data)
+        session.execute("select hire_employee_firm('"+hired_unemployed_ssn+"')").fetchall()
     else:
         session.execute(interview.update().where(db.and_(interview.c.worker_ssn==hired_unemployed_ssn, interview.c.firm_id==hiring_firm_id)).values(outcome=outcome))
 
